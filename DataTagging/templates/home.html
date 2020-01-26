@@ -22,57 +22,66 @@
     <div class="container">
         <nav class="navbar navbar-light rounded" style="background-color: #e6e6e6;">
             <a class="navbar-brand" href="#">
-                <img src="{% static '/images/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+                <img src="{% static '/images/logo.png' %}" width="30" height="30" class="d-inline-block align-top"
+                    alt="">
                 SUST
             </a>
         </nav>
     </div>
     <!------- Navbar Ended ------->
-
     
-    <div class="container pt-5">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <b>Sentence</b>
-            </div>
-            <div class="col-3">
-            </div>
-        </div><br>
+    <form method="POST" action="{% url 'homePost' texts.id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="container pt-5 form-group">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <b>Sentence</b>
+                </div>
+                <div class="col-3">
+                </div>
+            </div><br>
 
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <label class="rounded text-center pl-2 pt-2 pb-2 pr-2" style="background-color: #f6e3f8;" name="name"> {{texts.statement}} </label>
-            </div>
-            <div class="col-3"></div>
-        </div> <br>
-    </div>
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <label class="rounded text-center pl-2 pt-2 pb-2 pr-2" style="background-color: #fef4ff;"
+                        name="statement"> {{texts.statement}} </label>
+                </div>
+                <div class="col-3"></div>
+            </div> 
+        </div>
 
-    <div class="container pt-5">
+        <div class="container pt-5">
 
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <b>Expression</b>
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <b>Expression</b>
+                </div>
+                <div class="col-3">
+                </div>
+            </div><br>
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <!-- <input type="radio" name="star_1" id="star1"><label for="star1"></label> -->
+                    <input class="form-check-input" type="radio" name="expression" id="btn-1" value="1"><label class="pl-4 form-check-label" for="btn-1">খুশি</label><br>
+                    <input class="form-check-input" type="radio" name="expression" id="btn-2" value="2"><label class="pl-4 form-check-label" for="btn-2">দুঃখ</label><br>
+                    <input class="form-check-input" type="radio" name="expression" id="btn-3" value="3"><label class="pl-4 form-check-label" for="btn-3">অবাক</label><br>
+                    <input class="form-check-input" type="radio" name="expression" id="btn-4" value="4"><label class="pl-4 form-check-label" for="btn-4">রাগ</label><br>
+                    <input class="form-check-input" type="radio" name="expression" id="btn-5" value="5" checked><label class="pl-4 form-check-label" for="btn-5">অন্যান্য</label><br><br>
+                </div>
+                <div class="col-3"></div>
             </div>
-            <div class="col-3">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
             </div>
-        </div><br>
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <!-- <input type="radio" name="star_1" id="star1"><label for="star1"></label> -->
-                <label><input type="radio" name="expression"><b class="pl-4">খুশি</b></label><br>
-                <label><input type="radio" name="expression"><b class="pl-4">দুঃখ</b></label><br>
-                <label><input type="radio" name="expression"><b class="pl-4">অবা্ক</b></label><br>
-                <label><input type="radio" name="expression"><b class="pl-4">রাগ</b></label><br>
-                <label><input type="radio" name="expression"><b class="pl-4">অন্যান্য</b></label><br>
-            </div>
-            <div class="col-3"></div>
-        </div> <br>
-    </div>
-
+        </div>
+    </form>
 
     <!-- JSS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -84,6 +93,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <script src="{%static 'js/label_fetching.js' %}" type="text/javascript">
+        var token = `{{ csrf_token }}`
+    </script>
 
 </body>
 
