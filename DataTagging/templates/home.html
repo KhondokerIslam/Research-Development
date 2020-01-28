@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bangla Imotion Detection</title>
+    <title>Bangla Emotion Detection</title>
 
     <!-- Stylsheet -->
     <!-- Bootstrap -->
@@ -17,8 +17,61 @@
 
 </head>
 
+    <script src="https://cdn.rawgit.com/lingtalfi/simpledrag/master/simpledrag.js"></script>
+
+    <style type="text/css">
+
+        html, body {
+            height: 100%;
+        }
+
+        .panes-container {
+            display: flex;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .left-pane {
+            flex: auto;
+            background: #ccc;
+        }
+
+        .panes-separator {
+            cursor: col-resize;
+            background-color: #aaa;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='30'><path d='M2 0 v30 M5 0 v30 M8 0 v30' fill='none' stroke='black'/></svg>");
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 10px;
+        height: 100%;
+
+/* prevent browser's built-in drag from interfering */
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+            }
+
+        .right-pane {
+            width: 18%;
+            
+            background: #eee;
+        }
+
+        .panes-container,
+        .panes-separator,
+        .left-pane,
+        .right-pane {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+    </style>
+
+</head>
+
 <body>
-    <!------- Navbar Started ------->
+
     <div class="container">
         <nav class="navbar navbar-light rounded" style="background-color: #e6e6e6;">
             <a class="navbar-brand" href="#">
@@ -28,11 +81,14 @@
             </a>
         </nav>
     </div>
-    <!------- Navbar Ended ------->
-    
+
+<div class="panes-container">
+    <div class="left-pane" id="left-pane">
+
+            <div class = "splitInterstitial">
     <form method="POST" action="{% url 'homePost' texts.id %}" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="container pt-5 form-group">
+        
             <div class="row">
                 <div class="col-3"></div>
                 <div class="col-6">
@@ -45,15 +101,15 @@
             <div class="row">
                 <div class="col-3"></div>
                 <div class="col-6">
-                    <label class="rounded text-center pl-2 pt-2 pb-2 pr-2" style="background-color: #fef4ff;"
-                        name="statement"> {{texts.statement}} </label>
+                    <p style="font-size:35px">  <label class="rounded text-center pl-2 pt-2 pb-2 pr-2" style="background-color: #fef4ff;"
+                        name="statement"> {{texts.statement}} </label> </p>
                 </div>
                 <div class="col-3"></div>
             </div> 
         </div>
 
         <div class="container pt-5">
-
+            
             <div class="row">
                 <div class="col-3"></div>
                 <div class="col-6">
@@ -81,22 +137,64 @@
                 </div>
             </div>
         </div>
-    </form>
 
-    <!-- JSS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
-    <script src="{%static 'js/label_fetching.js' %}" type="text/javascript">
-        var token = `{{ csrf_token }}`
-    </script>
+    </div>
+    <div class="panes-separator" id="panes-separator"></div>
+    <div class="right-pane" id="right-pane">
+        <p>And I'm the right pane</p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusantium at cum cupiditate dolorum, eius eum
+            eveniet facilis illum maiores molestiae necessitatibus optio possimus sequi sunt, vel voluptate. Asperiores,
+            voluptate!
+        </p>
+    </div>
+</div>
+
+
+<script>
+
+
+    var leftPane = document.getElementById('left-pane');
+    var rightPane = document.getElementById('right-pane');
+    var paneSep = document.getElementById('panes-separator');
+
+    // The script below constrains the target to move horizontally between a left and a right virtual boundaries.
+    // - the left limit is positioned at 10% of the screen width
+    // - the right limit is positioned at 90% of the screen width
+    var leftLimit = 10;
+    var rightLimit = 90;
+
+
+    paneSep.sdrag(function (el, pageX, startX, pageY, startY, fix) {
+
+        fix.skipX = true;
+
+        if (pageX < window.innerWidth * leftLimit / 100) {
+            pageX = window.innerWidth * leftLimit / 100;
+            fix.pageX = pageX;
+        }
+        if (pageX > window.innerWidth * rightLimit / 100) {
+            pageX = window.innerWidth * rightLimit / 100;
+            fix.pageX = pageX;
+        }
+
+        var cur = pageX / window.innerWidth * 100;
+        if (cur < 0) {
+            cur = 0;
+        }
+        if (cur > window.innerWidth) {
+            cur = window.innerWidth;
+        }
+
+
+        var right = (100-cur-2);
+        leftPane.style.width = cur + '%';
+        rightPane.style.width = right + '%';
+
+    }, null, 'horizontal');
+
+
+</script>
 
 </body>
-
 </html>
