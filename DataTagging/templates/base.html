@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bangla Imotion Detection</title>
+
+    <!-- Stylsheet -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <!------- Navbar Started ------->
+    <div class="container">
+        <nav class="navbar navbar-light rounded" style="background-color: #e6e6e6;">
+            <a class="navbar-brand" href="#">
+                <img src="{% static '/images/logo.png' %}" width="30" height="30" class="d-inline-block align-top"
+                    alt="">
+                SUST
+            </a>
+        </nav>
+    </div>
+    <!------- Navbar Ended ------->
+    {% block content%}
+    {% endblock %}
+</body>
+</html>

@@ -1,6 +1,7 @@
 
 import os
-
+from decouple import config, Csv
+ 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -9,12 +10,28 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'd#@!oy$586_qxtq)8-*^ls+^=41*0!%b@u_2!9#q$_m*6#peeg'
+SECRET_KEY = config('SECRET_KEY')
+
+SOCIAL_AUTH_FACEBOOK_KEY = '186725275950574'  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = '09147df7458ac1cfbdaf04b755591817'  # App Secret
+
+SOCIAL_AUTH_GITHUB_KEY = '24a5dcf6a603afb75a91'
+SOCIAL_AUTH_GITHUB_SECRET = '6b72cf9b454a9088d347af2a8167461ff72e1342'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '583468410705-ocu4jqi59pmtvpjvnqau9jo91m360r7s.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'F3H6Aoh_s7SyAuOJ5Q4rg2E_'
+
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/settings/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/settings/'
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+# SOCIAL_AUTH_FACEBOOK_API_VERSION = '2.11'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = config('DEBUG', cast=bool)
+
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 
 # Application definition
@@ -27,6 +44,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.facebook',
+    # 'django.contrib.sites',
+
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -37,6 +62,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'social_django.middleware.SocialAuthExceptionMiddleware',  # <--
 ]
 
 ROOT_URLCONF = 'DataTagging.urls'
@@ -52,6 +79,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',  # <--
+                'social_django.context_processors.login_redirect', # <--
             ],
         },
     },
@@ -66,10 +96,10 @@ WSGI_APPLICATION = 'DataTagging.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sust_thesisdb',
-        'USER': 'postgres',
-        'PASSWORD': 'django1234',
-        'HOST': 'localhost',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
         'PORT': '5432',
     }
 }
@@ -122,3 +152,22 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+
+AUTHENTICATION_BACKENDS = (
+    # 'django.contrib.auth.backends.ModelBackend',
+    # 'allauth.account.auth_backends.AuthenticationBackend',
+
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# SITE_ID = 1
+
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'home'
