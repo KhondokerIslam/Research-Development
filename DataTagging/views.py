@@ -4,9 +4,12 @@ from django.contrib import auth
 # from django.contrib.auth import update_session_auth_hash
 # from django.contrib import messages
 from social_django.models import UserSocialAuth
+from django.contrib.auth.models import User
 from inputs.models import Input
+from records.models import Record
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from decimal import *
 
 # github_login, twitter_login, facebook_login = None
 def get_account(request):
@@ -42,17 +45,37 @@ def homePost(request, text_id):
     github_login, twitter_login, facebook_login, google_login = get_account(request)
     if request.method == 'POST':
         innput = get_object_or_404(Input, pk=text_id)
+        temp_accuracy = 0.0
+        total = innput.happy + innput.sad + innput.stupefied + innput.angry + innput.others + 1
         if request.POST.get('expression') == "1":
             innput.happy += 1
-        if request.POST.get('expression') == "2":
+            temp_accuracy = innput.happy / total
+        elif request.POST.get('expression') == "2":
             innput.sad += 1
-        if request.POST.get('expression') == "3":
-            innput.stupyfied += 1
-        if request.POST.get('expression') == "4":
+            temp_accuracy = innput.sad / total
+        elif request.POST.get('expression') == "3":
+            innput.stupefied += 1
+            temp_accuracy = innput.stupefied / total
+        elif request.POST.get('expression') == "4":
             innput.angry += 1
-        if request.POST.get('expression') == "5":
+            temp_accuracy = innput.angry / total
+        elif request.POST.get('expression') == "5":
             innput.others += 1
+            temp_accuracy = innput.others / total
         innput.save()
+
+        user = User.objects.get(pk=request.user.pk)
+        record = Record.objects.filter(user=user)
+        print(record)
+        if not record :
+            record = Record(user=user)
+            record.save()
+        record.total_tags += 1
+        record.total_accuracy = Decimal(record.total_accuracy) +  Decimal(temp_accuracy)
+        record.accuracy = Decimal(record.total_accuracy) / Decimal(record.total_tags)
+        record.accuracy = Decimal(record.accuracy) * Decimal(100.0)
+        record.save()
+
     else:
         pass
     random_text = Input.objects.order_by('?')[0]
@@ -100,6 +123,18 @@ def settings(request):
         'facebook_login': facebook_login,
         'google_login':google_login,
     })
+
+@login_required
+def leaderBoard(request):
+    users = User.objects.all().order_by('id')
+    current_user = request.user
+    records = Record.objects.all().order_by('user_id')
+    zippedList = zip(users, records)
+    return render(request, 'leaderboard.html', {'current_user':current_user, 'zippedlist':zippedList})
+
+
+
+
 
 # @login_required
 # def password(request):

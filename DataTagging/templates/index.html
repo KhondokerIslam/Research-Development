@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-	{% load static %}
-	<title>Login V5</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends 'base.html' %}
+{% load static %}
+{% block css_block %}
 	<!--===============================================================================================-->
 	<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}" />
 	<!--===============================================================================================-->
@@ -28,39 +23,33 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 	<!--===============================================================================================-->
-</head>
+{% endblock %}
 
-<body>
-	<!------- Navbar Started ------->
-	<nav class="navbar navbar-expand-lg navbar-light rounded" style="background-color: #e6e6e6;">
-		<div class="container">
-			<a class="navbar-brand" href="#">
-				<img src="{% static '/images/logo.png' %}" width="30" height="30" class="d-inline-block align-top p-r-2"
-					alt="">
-				S U S T
-			</a>
-			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-				<div class="navbar-nav ml-auto">
-					{% if user.is_authenticated %}
-					{% if github_login %}
-    				<p class="nav-item nav-link">Connected as </p><a class="nav-item nav-link" href="https://github.com/{{ github_login.extra_data.login }}/" target="_blank">{{ github_login.extra_data.login }}</a>
-					{% elif google_login %}
-					<p class="nav-item nav-link">Connected as </p><a class="nav-item nav-link" href="https://google.com/{{ google_login.uid }}/" target="_blank">{{ google_login.uid }}</a>
-					{%endif%}
-					<a class="nav-item nav-link active" href="{% url 'homePost' texts.id %}">Home</a>
-					<a class="nav-item nav-link" href="#">LeaderBoard</a>
-					<a class="nav-item nav-link"
-						href="javascript:{document.getElementById('logout').submit()}">Logout</a>
-					<form method="POST" action="{% url 'logout' %}" id="logout">
-						{% csrf_token %}
-						<input type="hidden" />
-					</form>
-					{% endif %}
-				</div>
-			</div>
+{% block navbar_block %}
+
+	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+		<div class="navbar-nav ml-auto">
+			{% if user.is_authenticated %}
+			{% if github_login %}
+			<p class="nav-item nav-link">Connected as </p><a class="nav-item nav-link" href="https://github.com/{{ github_login.extra_data.login }}/" target="_blank">{{ github_login.extra_data.login }}</a>
+			{% elif google_login %}
+			<p class="nav-item nav-link">Connected as </p><a class="nav-item nav-link" href="https://google.com/{{ google_login.uid }}/" target="_blank">{{ google_login.uid }}</a>
+			{%endif%}
+			<a class="nav-item nav-link active" href="{% url 'homePost' texts.id %}">Home</a>
+			<a class="nav-item nav-link" href="{% url 'leaderboard' %}">LeaderBoard</a>
+			<a class="nav-item nav-link"
+				href="javascript:{document.getElementById('logout').submit()}">Logout</a>
+			<form method="POST" action="{% url 'logout' %}" id="logout">
+				{% csrf_token %}
+				<input type="hidden" />
+			</form>
+			{% endif %}
 		</div>
-	</nav>
-	<!------- Navbar Ended ------->
+	</div>
+
+{% endblock %}
+
+{% block body_block %}
 
 	{% if user.is_authenticated %}
 	<form method="POST" action="{% url 'homePost' texts.id %}" enctype="multipart/form-data">
@@ -195,6 +184,9 @@
 
 	<div id="dropDownSelect1"></div>
 
+{% endblock %}
+
+{% block js_block %}
 	<!--===============================================================================================-->
 	<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
 	<!--===============================================================================================-->
@@ -211,7 +203,4 @@
 	<script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
 	<!--===============================================================================================-->
 	<script src="{% static 'js/main.js' %}"></script>
-
-</body>
-
-</html>
+{% endblock %}

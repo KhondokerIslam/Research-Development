@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_block%}
+{% endblock %}
+
+{% block navbar_block%}
+{% endblock %}
+
+{% block body_block%}
+
+{% for user, record in zippedlist %}
+
+{% if user.is_superuser %}
+
+{% elif user == current_user %}
+<h1><b>Hello {{user.first_name}}</b>      {{ record.accuracy }}% Accuracy</h3>
+
+{% else %}
+<h2>{{user.first_name}}      {{ record.accuracy }}% Accuracy</h2>
+
+{% endif %}
+
+{% endfor %}
+
+
+{% endblock %}
+
+{% block js_block%}
+{% endblock %}
