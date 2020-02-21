@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_block%}
+<style> 
+
+    #rcorners1 {
+    border-radius: 10px;
+    background: rgb(116, 170, 46);
+    padding: 5px; 
+    width: 15px;
+    height: 10px; 
+    }
+    a:hover {color: transparent;}
+    a{color: whitesmoke; text-decoration: none;}
+</style>
+{% endblock %}
+
+{% block navbar_block%}
+<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav ml-auto">
+        {% if user.is_authenticated %}
+        {% if github_login %}
+        <p class="nav-item nav-link">Connected as </p><a class="nav-item nav-link" href="https://github.com/{{ github_login.extra_data.login }}/" target="_blank">{{ github_login.extra_data.login }}</a>
+        {% elif google_login %}
+        <p class="nav-item nav-link">Connected as </p><a class="nav-item nav-link" href="https://google.com/{{ google_login.uid }}/" target="_blank">{{ google_login.uid }}</a>
+        {%endif%}
+        <a class="nav-item nav-link" href="{% url 'homePost' 1 %}">Home</a>
+        <a class="nav-item nav-link active">LeaderBoard</a>
+        <a class="nav-item nav-link"
+            href="javascript:{document.getElementById('logout').submit()}">Logout</a>
+        <form method="POST" action="{% url 'logout' %}" id="logout">
+            {% csrf_token %}
+            <input type="hidden" />
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block body_block%}
+
+<div class="container pt-5">
+
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    <span style='color: whitesmoke'>Position</span>
+                </th>
+                <th>
+                    <span style='color: whitesmoke'>Name</span>
+                <th>
+                    <a href="{% url 'leaderBoard_default' %}"><span style='color: whitesmoke'>Total Tag</span></a>
+                </th>
+                <th>
+                    <a id = "rcorners1" href="{% url 'leaderBoard_by_accuracy' %}"><span style='color: whitesmoke'>Accuracy</span></a>
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for record in records %}
+            {% if record.user.is_superuser %}
+            {% else %}
+            <tr>
+                
+                {% if record.user == current_user %}
+                <th class="table-success" scope="row">{{ forloop.counter }}</th>
+                <td class="table-success"><b>{{record.user.first_name}}</b></td>
+                <th class="table-success">{{ record.total_tags }}</th>
+                <th class="table-success">{{ record.accuracy }}%</th>
+                {% else %}
+                <td scope="row">{{ forloop.counter }}</td>
+                <td>{{record.user.first_name}}</td>
+                <td>{{ record.total_tags }}</td>
+                <td>{{ record.accuracy }}%</td>
+                {% endif %}
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+
+
+{% endblock %}
+
+{% block js_block%}
+{% endblock %}
